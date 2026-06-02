@@ -1,9 +1,12 @@
 <?php
 class home{
-    public function index() {
-        require_once '../app/views/home/index.php';
+    public function index(){
+        //require_once '../app/views/home/index.php';
+        require_once '../app/views/layout/masterlayout.php';
     }
-    public function login() {
+    public function login(){
         require_once '../app/views/home/login.php';
     }
 }
+
+?>
