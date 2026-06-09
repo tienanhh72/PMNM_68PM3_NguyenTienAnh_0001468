@@ -11,12 +11,17 @@
             background-color: red;
             position: fixed;
             top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <p>Header</p>
+    <div class="header-container">
+        <span class="logo">Hệ thống Quản lý</span>
+        <button class="btn-add">+ Thêm sinh viên</button>
     </div>
 </body>
 </html>

@@ -9,12 +9,15 @@
             width: 100%;
             height: 80px;
             background-color: blue;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
 <body>
-    <div class="footer">
-        <p>Footer</p>
+    <div class="container">
+        <small>© 2026 Bản quyền thuộc về Trường Đại Học</small>
     </div>
 </body>
 </html>
