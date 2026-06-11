@@ -1,5 +1,12 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Nếu đang ở trong thư mục public rồi thì dừng lại, không điều hướng nữa
+    RewriteCond %{REQUEST_URI} !^/public/
+
+    # Chuyển hướng thư mục gốc về public/
     RewriteRule ^$ public/ [L]
-    RewriteRule (.*) public/$1 [L]
+
+    # Chuyển hướng mọi đường dẫn khác về public/ để index.php xử lý
+    RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>

@@ -43,6 +43,36 @@
                 'totalPage' => (int) $totalPage
             ];
         }
+        public function delete($id) {
+            $query = "DELETE FROM sinhvien WHERE id = :id";
+            $stmt = $this -> conn -> prepare($query);
+            $stmt -> bindParam(':id', $id, PDO::PARAM_INT);
+            if($stmt -> execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        public function getSinhvienById($id) {
+            $query = "SELECT * FROM sinhvien WHERE id = :id";
+            $stmt = $this -> conn -> prepare($query);
+            $stmt -> bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt -> execute();
+            return $stmt -> fetch(PDO::FETCH_ASSOC);
+        }
+        public function update($id, $HoTen, $GioiTinh, $MSSV) {
+            $query = "UPDATE sinhvien SET HoTen = :HoTen, GioiTinh = :GioiTinh, MSSV = :MSSV WHERE id = :id";
+            $stmt = $this -> conn -> prepare($query);
+            $stmt -> bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt -> bindParam(':HoTen', $HoTen);
+            $stmt -> bindParam(':GioiTinh', $GioiTinh);
+            $stmt -> bindParam(':MSSV', $MSSV);
+            if($stmt -> execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
     
 ?>
