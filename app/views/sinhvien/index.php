@@ -8,7 +8,8 @@
         .container {
             max-width: 1000px; 
             width: 90%;        
-            margin: 40px auto; 
+            margin: 40px auto;
+            background-color: #ffffff; 
         }
         table {
             border-collapse: collapse;
@@ -43,18 +44,33 @@
         }
         .pagination-container {
             display: flex;
-            /* justify-content: space-between; */
+            justify-content: center;
             align-items: center;
-            padding: 40px 0;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 20px 0;
             background-color: #ffffff;
             border-top: 1px solid #e2e8f0;
-            border-radius: 0 0 8px 8px; /* Bo góc khớp với đáy của bảng */
+            border-radius: 0 0 8px 8px;
+        }
+        .pagination-container .btn {
+            min-width: 42px;
+            text-align: center;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Danh sách sinh viên</h1>
+        <div class="header-container"> 
+            <h1>Danh sách sinh viên</h1>       
+            <a href="/sinhvien/create" class="btn btn-success">
+            <i class="fa-solid fa-plus"></i> Thêm sinh viên</a>
+        </div>
         <table>
             <thead>
                 <tr>
