@@ -1,12 +1,12 @@
 <?php
-class home{
-    public function index(){
-        //require_once '../app/views/home/index.php';
-        require_once '../app/views/layout/masterlayout.php';
+require_once '../app/core/Controller.php';
+class home extends Controller {
+    public function index() {
+        header('Location: /sinhvien/index');
+        exit();
     }
-    public function login(){
+    public function login() {
         require_once '../app/views/home/login.php';
     }
 }
-
 ?>
