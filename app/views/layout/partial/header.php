@@ -3,6 +3,7 @@
 $request_uri = $_SERVER['REQUEST_URI'] ?? '';
 $is_sinhvien = (strpos($request_uri, '/sinhvien') !== false || $request_uri === '/' || strpos($request_uri, '/home/index') !== false);
 $is_lop = (strpos($request_uri, '/lop') !== false);
+$is_home = ($request_uri === '/' || strpos($request_uri, '/home/index') !== false);
 $username = $_SESSION['username'] ?? 'Guest';
 ?>
 <style>
@@ -134,6 +135,7 @@ $username = $_SESSION['username'] ?? 'Guest';
         <a href="/sinhvien/index" class="navbar-brand-premium">
             <i class="fa-solid fa-graduation-cap"></i> QLSV
         </a>
+        <?php if (!$is_home): ?>
         <ul class="navbar-menu-premium">
             <li class="navbar-item-premium <?php echo $is_sinhvien ? 'active' : ''; ?>">
                 <a href="/sinhvien/index">
@@ -146,6 +148,7 @@ $username = $_SESSION['username'] ?? 'Guest';
                 </a>
             </li>
         </ul>
+        <?php endif; ?>
         <div class="navbar-user-premium">
             <div class="user-info-badge">
                 <i class="fa-solid fa-circle-user"></i>

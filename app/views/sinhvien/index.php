@@ -19,16 +19,42 @@ $currentPage = floor($offset / $limit) + 1;
         margin: 0;
     }
 
+    .search-wrapper {
+        position: relative;
+        display: flex;
+        max-width: 500px;
+    }
+
     .search-input {
         border-radius: 10px 0 0 10px !important;
         border: 1px solid #cbd5e1;
-        padding: 10px 16px;
+        padding: 10px 40px 10px 16px;
         font-weight: 500;
+        flex: 1;
     }
 
     .search-input:focus {
         border-color: #6366f1;
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    .search-clear-btn {
+        position: absolute;
+        right: 130px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        padding: 4px 6px;
+        line-height: 1;
+        z-index: 5;
+        transition: color 0.2s ease;
+    }
+
+    .search-clear-btn:hover {
+        color: #475569;
     }
 
     .search-btn {
@@ -38,6 +64,7 @@ $currentPage = floor($offset / $limit) + 1;
         color: white;
         padding: 10px 20px;
         font-weight: 600;
+        white-space: nowrap;
     }
 
     .search-btn:hover {
@@ -246,18 +273,24 @@ $currentPage = floor($offset / $limit) + 1;
 
         <!-- Thanh Tìm kiếm -->
         <form action="/sinhvien/index/<?php echo $limit; ?>/0" method="GET" class="mb-4">
-            <div class="input-group" style="max-width: 500px;">
-                <input type="text" name="search" class="form-control search-input" placeholder="Tìm kiếm theo MSSV, Họ tên, Mã lớp..." value="<?php echo htmlspecialchars($search); ?>">
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" name="search" class="form-control search-input" placeholder="Tìm kiếm theo MSSV, Họ tên, Mã lớp..." value="<?php echo htmlspecialchars($search); ?>">
+                <?php if (!empty($search)): ?>
+                    <button type="button" class="search-clear-btn" onclick="clearSearch()" title="Xóa tìm kiếm">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                <?php endif; ?>
                 <button class="btn search-btn" type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
                 </button>
-                <?php if (!empty($search)): ?>
-                    <a href="/sinhvien/index/<?php echo $limit; ?>/0" class="btn btn-outline-secondary d-flex align-items-center justify-content-center" style="border-radius: 0; border-color: #cbd5e1; border-left: none;">
-                        <i class="fa-solid fa-xmark"></i>
-                    </a>
-                <?php endif; ?>
             </div>
         </form>
+        <script>
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.querySelector('form').submit();
+        }
+        </script>
 
         <!-- Bảng sinh viên -->
         <div class="table-responsive">
@@ -279,7 +312,7 @@ $currentPage = floor($offset / $limit) + 1;
                         foreach($sinhvien as $sv): 
                         ?>
                             <tr>
-                                <td><strong>#<?php echo $stt++; ?></strong></td>
+                                <td><strong><?php echo $stt++; ?></strong></td>
                                 <td><code class="text-dark font-monospace fw-bold" style="font-size: 0.95rem;"><?php echo htmlspecialchars($sv['mssv']); ?></code></td>
                                 <td class="fw-semibold text-slate-800"><?php echo htmlspecialchars($sv['hoten']); ?></td>
                                 <td>

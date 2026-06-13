@@ -1,8 +1,8 @@
 <?php
     class auth{
         protected $user=[
-            'admin' => '2',
-            'tienanh' => '2'
+            'admin' => '1',
+            'tienanh' => '1',
         ];
         public function login() {
             if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -10,7 +10,7 @@
                 $password = $_POST['password'] ?? '';
                 if (isset($this->user[$username]) && $this->user[$username] === $password) {
                     $_SESSION['username'] = $username;
-                    header('Location: /sinhvien/index');
+                    header('Location: /home/index');
                     exit();
                 } else {
                     header('Location: /home/login');

@@ -93,7 +93,7 @@
             <!-- MSSV -->
             <div class="mb-3">
                 <label for="mssv" class="form-label form-label-premium">Mã số sinh viên (MSSV)</label>
-                <input type="text" id="mssv" name="mssv" class="form-control form-control-premium" placeholder="Nhập đúng 6 chữ số (Ví dụ: 314901)" maxlength="6" required>
+                <input type="text" id="mssv" name="mssv" class="form-control form-control-premium" placeholder="Nhập đúng 6 chữ số (Ví dụ: 000123)" maxlength="6" required>
                 <small class="form-text text-muted">MSSV bắt buộc gồm 6 chữ số và không được trùng lặp.</small>
             </div>
 

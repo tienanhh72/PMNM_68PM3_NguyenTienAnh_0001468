@@ -30,9 +30,10 @@ class App
         call_user_func_array([$this->controller, $this->action], $this->params);
     }
     public function UrlProcess(){
-        if (isset($_GET['url'])) {
+        if (isset($_GET['url']) && $_GET['url'] !== '') {
             return explode('/', filter_var(trim($_GET['url'], '/')));
         }
+        return [];
     }
 }
 
