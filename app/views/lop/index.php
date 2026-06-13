@@ -250,7 +250,7 @@ $currentPage = floor($offset / $limit) + 1;
                         foreach($lop as $l): 
                         ?>
                             <tr>
-                                <td><strong>#<?php echo $stt++; ?></strong></td>
+                                <td><strong><?php echo $stt++; ?></strong></td>
                                 <td><span class="badge-class-code"><?php echo htmlspecialchars($l['MaLop']); ?></span></td>
                                 <td class="fw-semibold text-slate-800"><?php echo htmlspecialchars($l['TenLop']); ?></td>
                                 <td class="text-muted"><?php echo htmlspecialchars($l['GhiChu'] ?: 'Không có ghi chú'); ?></td>

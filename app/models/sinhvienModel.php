@@ -23,15 +23,28 @@
             return $stmt->execute();
         }
 
-        public function paging($limit = 5, $offset = 0, $search = "") {
+        public function paging($limit = 5, $offset = 0, $search = "", $sortBy = 'mssv', $sortDir = 'ASC') {
             $searchQuery = "";
             $params = [];
             if (!empty($search)) {
-                $searchQuery = " WHERE s.hoten LIKE :search OR s.mssv LIKE :search OR s.MaLop LIKE :search OR l.TenLop LIKE :search";
-                $params[':search'] = '%' . $search . '%';
+                $searchLower = mb_strtolower($search, 'UTF-8');
+                $searchQuery = " WHERE (LOWER(s.hoten) COLLATE utf8_bin LIKE :search
+                                    OR s.mssv LIKE :search_exact
+                                    OR s.MaLop LIKE :search_exact2
+                                    OR LOWER(l.TenLop) COLLATE utf8_bin LIKE :search3)";
+                $params[':search']        = '%' . $searchLower . '%';
+                $params[':search_exact']  = '%' . $search . '%';
+                $params[':search_exact2'] = '%' . $search . '%';
+                $params[':search3']       = '%' . $searchLower . '%';
             }
 
-            $query = "SELECT s.*, l.TenLop FROM tbl_sinh_vien s LEFT JOIN tbl_lop l ON s.MaLop = l.MaLop" . $searchQuery . " ORDER BY s.id DESC LIMIT :limit OFFSET :offset";
+            // Whitelist để tránh SQL injection
+            $allowedSort = ['mssv', 'hoten', 'id'];
+            $allowedDir  = ['ASC', 'DESC'];
+            $sortBy  = in_array($sortBy, $allowedSort)  ? $sortBy  : 'id';
+            $sortDir = in_array(strtoupper($sortDir), $allowedDir) ? strtoupper($sortDir) : 'DESC';
+
+            $query = "SELECT s.*, l.TenLop FROM tbl_sinh_vien s LEFT JOIN tbl_lop l ON s.MaLop = l.MaLop" . $searchQuery . " ORDER BY s.{$sortBy} {$sortDir} LIMIT :limit OFFSET :offset";
             $stmt = $this->conn->prepare($query);
             
             foreach ($params as $key => $val) {

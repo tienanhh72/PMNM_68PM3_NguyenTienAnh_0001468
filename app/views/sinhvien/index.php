@@ -1,5 +1,16 @@
 <?php
 $currentPage = floor($offset / $limit) + 1;
+// Helper: tạo URL sort, giữ nguyên search và limit/offset
+function sortUrl($limit, $search, $col, $currentSortBy, $currentSortDir) {
+    $dir = ($currentSortBy === $col && $currentSortDir === 'ASC') ? 'DESC' : 'ASC';
+    return '/sinhvien/index/' . $limit . '/0?search=' . urlencode($search) . '&sortBy=' . $col . '&sortDir=' . $dir;
+}
+function sortIcon($col, $currentSortBy, $currentSortDir) {
+    if ($currentSortBy !== $col) return '<i class="fa-solid fa-sort ms-1 text-muted opacity-50"></i>';
+    return $currentSortDir === 'ASC'
+        ? '<i class="fa-solid fa-sort-up ms-1" style="color:#4f46e5;"></i>'
+        : '<i class="fa-solid fa-sort-down ms-1" style="color:#4f46e5;"></i>';
+}
 ?>
 <style>
     .card-premium {
@@ -108,6 +119,19 @@ $currentPage = floor($offset / $limit) + 1;
         letter-spacing: 1px;
         padding: 16px 20px;
         border-bottom: 2px solid #e2e8f0;
+    }
+
+    .table-premium th a.sort-link {
+        color: inherit;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        transition: color 0.2s ease;
+    }
+
+    .table-premium th a.sort-link:hover {
+        color: #4f46e5;
     }
 
     .table-premium td {
@@ -273,6 +297,8 @@ $currentPage = floor($offset / $limit) + 1;
 
         <!-- Thanh Tìm kiếm -->
         <form action="/sinhvien/index/<?php echo $limit; ?>/0" method="GET" class="mb-4">
+            <input type="hidden" name="sortBy" value="<?php echo htmlspecialchars($sortBy); ?>">
+            <input type="hidden" name="sortDir" value="<?php echo htmlspecialchars($sortDir); ?>">
             <div class="search-wrapper">
                 <input type="text" id="searchInput" name="search" class="form-control search-input" placeholder="Tìm kiếm theo MSSV, Họ tên, Mã lớp..." value="<?php echo htmlspecialchars($search); ?>">
                 <?php if (!empty($search)): ?>
@@ -293,13 +319,22 @@ $currentPage = floor($offset / $limit) + 1;
         </script>
 
         <!-- Bảng sinh viên -->
+        <div id="sv-table-zone">
         <div class="table-responsive">
             <table class="table-premium">
                 <thead>
                     <tr>
                         <th style="width: 80px;">STT</th>
-                        <th style="width: 130px;">MSSV</th>
-                        <th>Họ và tên</th>
+                        <th style="width: 130px;">
+                            <a href="<?php echo sortUrl($limit, $search, 'mssv', $sortBy, $sortDir); ?>" class="sort-link sv-ajax-link">
+                                MSSV <?php echo sortIcon('mssv', $sortBy, $sortDir); ?>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="<?php echo sortUrl($limit, $search, 'hoten', $sortBy, $sortDir); ?>" class="sort-link sv-ajax-link">
+                                Họ và tên <?php echo sortIcon('hoten', $sortBy, $sortDir); ?>
+                            </a>
+                        </th>
                         <th style="width: 140px;">Giới tính</th>
                         <th>Lớp học</th>
                         <th style="width: 220px;" class="text-center">Thao tác</th>
@@ -364,24 +399,26 @@ $currentPage = floor($offset / $limit) + 1;
         <!-- Phân trang -->
         <?php if ($totalPage > 1): ?>
             <div class="mt-4">
+                <?php
+                $sortParams = '&sortBy=' . urlencode($sortBy) . '&sortDir=' . urlencode($sortDir);
+                ?>
                 <nav aria-label="Student pagination">
                     <ul class="pagination pagination-premium justify-content-center">
                         <!-- First -->
                         <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="/sinhvien/index/<?php echo $limit; ?>/0?search=<?php echo urlencode($search); ?>" aria-label="First">
+                            <a class="page-link sv-ajax-link" href="/sinhvien/index/<?php echo $limit; ?>/0?search=<?php echo urlencode($search); ?><?php echo $sortParams; ?>" aria-label="First">
                                 <i class="fa-solid fa-angles-left"></i>
                             </a>
                         </li>
                         <!-- Prev -->
                         <li class="page-item <?php echo ($currentPage <= 1) ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="/sinhvien/index/<?php echo $limit; ?>/<?php echo max(0, $offset - $limit); ?>?search=<?php echo urlencode($search); ?>" aria-label="Previous">
+                            <a class="page-link sv-ajax-link" href="/sinhvien/index/<?php echo $limit; ?>/<?php echo max(0, $offset - $limit); ?>?search=<?php echo urlencode($search); ?><?php echo $sortParams; ?>" aria-label="Previous">
                                 <i class="fa-solid fa-angle-left"></i>
                             </a>
                         </li>
                         
                         <!-- Pages -->
                         <?php 
-                        // Hiển thị tối đa 5 nút trang xung quanh trang hiện tại
                         $startPage = max(1, $currentPage - 2);
                         $endPage = min($totalPage, $currentPage + 2);
                         
@@ -389,7 +426,7 @@ $currentPage = floor($offset / $limit) + 1;
                             $pageOffset = ($i - 1) * $limit;
                         ?>
                             <li class="page-item <?php echo ($i == $currentPage) ? 'active' : ''; ?>">
-                                <a class="page-link" href="/sinhvien/index/<?php echo $limit; ?>/<?php echo $pageOffset; ?>?search=<?php echo urlencode($search); ?>">
+                                <a class="page-link sv-ajax-link" href="/sinhvien/index/<?php echo $limit; ?>/<?php echo $pageOffset; ?>?search=<?php echo urlencode($search); ?><?php echo $sortParams; ?>">
                                     <?php echo $i; ?>
                                 </a>
                             </li>
@@ -397,13 +434,13 @@ $currentPage = floor($offset / $limit) + 1;
 
                         <!-- Next -->
                         <li class="page-item <?php echo ($currentPage >= $totalPage) ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="/sinhvien/index/<?php echo $limit; ?>/<?php echo min(($totalPage - 1) * $limit, $offset + $limit); ?>?search=<?php echo urlencode($search); ?>" aria-label="Next">
+                            <a class="page-link sv-ajax-link" href="/sinhvien/index/<?php echo $limit; ?>/<?php echo min(($totalPage - 1) * $limit, $offset + $limit); ?>?search=<?php echo urlencode($search); ?><?php echo $sortParams; ?>" aria-label="Next">
                                 <i class="fa-solid fa-angle-right"></i>
                             </a>
                         </li>
                         <!-- Last -->
                         <li class="page-item <?php echo ($currentPage >= $totalPage) ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="/sinhvien/index/<?php echo $limit; ?>/<?php echo ($totalPage - 1) * $limit; ?>?search=<?php echo urlencode($search); ?>" aria-label="Last">
+                            <a class="page-link sv-ajax-link" href="/sinhvien/index/<?php echo $limit; ?>/<?php echo ($totalPage - 1) * $limit; ?>?search=<?php echo urlencode($search); ?><?php echo $sortParams; ?>" aria-label="Last">
                                 <i class="fa-solid fa-angles-right"></i>
                             </a>
                         </li>
@@ -411,5 +448,46 @@ $currentPage = floor($offset / $limit) + 1;
                 </nav>
             </div>
         <?php endif; ?>
+        </div><!-- end #sv-table-zone -->
+
+<script>
+(function () {
+    function svFetch(url) {
+        const ajaxUrl = url + (url.includes('?') ? '&' : '?') + 'ajax=1';
+        fetch(ajaxUrl)
+            .then(r => r.text())
+            .then(html => {
+                // Lấy nội dung #sv-table-zone từ response
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                const newZone = tmp.querySelector('#sv-table-zone');
+                if (newZone) {
+                    document.getElementById('sv-table-zone').innerHTML = newZone.innerHTML;
+                    bindLinks();
+                }
+                // Cập nhật URL trên thanh địa chỉ mà không reload
+                history.pushState(null, '', url);
+            });
+    }
+
+    function bindLinks() {
+        document.querySelectorAll('.sv-ajax-link').forEach(function (el) {
+            el.addEventListener('click', function (e) {
+                // Bỏ qua nếu disabled
+                if (el.closest('.disabled')) return;
+                e.preventDefault();
+                svFetch(el.getAttribute('href'));
+            });
+        });
+    }
+
+    bindLinks();
+
+    // Xử lý nút back/forward của trình duyệt
+    window.addEventListener('popstate', function () {
+        svFetch(location.pathname + location.search);
+    });
+})();
+</script>
     </div>
 </div>

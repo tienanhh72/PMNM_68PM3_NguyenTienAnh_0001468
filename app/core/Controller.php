@@ -8,6 +8,11 @@ class Controller {
     public function view($viewName, $data = []) {
         extract($data);
         $viewname = $viewName;
-        require_once '../app/views/layout/masterlayout.php';
+        // Nếu là AJAX request thì chỉ render view, không có layout
+        if (!empty($_GET['ajax'])) {
+            require_once '../app/views/' . $viewname . '.php';
+        } else {
+            require_once '../app/views/layout/masterlayout.php';
+        }
     }
 }

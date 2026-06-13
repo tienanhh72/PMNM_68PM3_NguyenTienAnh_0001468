@@ -2,10 +2,12 @@
 require_once '../app/core/Controller.php';
 class sinhvien extends Controller {
     public function index($limit = 5, $offset = 0) {
-        $search = $_GET['search'] ?? '';
-        
+        $search  = $_GET['search']  ?? '';
+        $sortBy  = $_GET['sortBy']  ?? 'mssv';
+        $sortDir = $_GET['sortDir'] ?? 'ASC';
+
         $sinhvienModel = $this->model('sinhvienModel');
-        $result = $sinhvienModel->paging($limit, $offset, $search);
+        $result = $sinhvienModel->paging($limit, $offset, $search, $sortBy, $sortDir);
 
         $sinhvien = $result['sinhvien'] ?? [];
         $totalPage = $result['totalPage'] ?? 0;
@@ -18,7 +20,9 @@ class sinhvien extends Controller {
             'totalRecord' => $totalRecord,
             'limit' => $limit,
             'offset' => $offset,
-            'search' => $search
+            'search' => $search,
+            'sortBy' => $sortBy,
+            'sortDir' => $sortDir,
         ]);
     }
 
