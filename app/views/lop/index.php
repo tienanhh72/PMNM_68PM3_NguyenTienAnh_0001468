@@ -21,13 +21,39 @@ $currentPage = floor($offset / $limit) + 1;
     .search-input {
         border-radius: 10px 0 0 10px !important;
         border: 1px solid #cbd5e1;
-        padding: 10px 16px;
+        padding: 10px 40px 10px 16px;
         font-weight: 500;
+        flex: 1;
     }
 
     .search-input:focus {
         border-color: #6366f1;
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    .search-wrapper {
+        position: relative;
+        display: flex;
+        max-width: 500px;
+    }
+
+    .search-clear-btn {
+        position: absolute;
+        right: 130px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        padding: 4px 6px;
+        line-height: 1;
+        z-index: 5;
+        transition: color 0.2s ease;
+    }
+
+    .search-clear-btn:hover {
+        color: #475569;
     }
 
     .search-btn {
@@ -37,6 +63,7 @@ $currentPage = floor($offset / $limit) + 1;
         color: white;
         padding: 10px 20px;
         font-weight: 600;
+        white-space: nowrap;
     }
 
     .search-btn:hover {
@@ -216,20 +243,42 @@ $currentPage = floor($offset / $limit) + 1;
             </div>
         </div>
 
-        <!-- Thanh Tìm kiếm -->
-        <form action="/lop/index/<?php echo $limit; ?>/0" method="GET" class="mb-4">
-            <div class="input-group" style="max-width: 500px;">
-                <input type="text" name="search" class="form-control search-input" placeholder="Tìm kiếm theo mã lớp, tên lớp..." value="<?php echo htmlspecialchars($search); ?>">
-                <button class="btn search-btn" type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
-                </button>
-                <?php if (!empty($search)): ?>
-                    <a href="/lop/index/<?php echo $limit; ?>/0" class="btn btn-outline-secondary d-flex align-items-center justify-content-center" style="border-radius: 0; border-color: #cbd5e1; border-left: none;">
-                        <i class="fa-solid fa-xmark"></i>
-                    </a>
-                <?php endif; ?>
-            </div>
-        </form>
+        <!-- Thanh Tìm kiếm + PageSize -->
+        <div class="d-flex align-items-center justify-content-between gap-3 mb-4 flex-wrap">
+            <form action="/lop/index/<?php echo $limit; ?>/0" method="GET" id="searchForm">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" name="search" class="form-control search-input" placeholder="Tìm kiếm theo mã lớp, tên lớp..." value="<?php echo htmlspecialchars($search); ?>">
+                    <?php if (!empty($search)): ?>
+                        <button type="button" class="search-clear-btn" onclick="clearSearch()" title="Xóa tìm kiếm">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    <?php endif; ?>
+                    <button class="btn search-btn" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                    </button>
+                </div>
+            </form>
+
+            <!-- Chọn số dòng mỗi trang -->
+            <form action="/lop/index/<?php echo $limit; ?>/0" method="GET" id="pageSizeForm">
+                <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                <div class="d-flex align-items-center gap-2">
+                    <label class="text-muted text-nowrap" style="font-size:0.9rem; font-weight:600;">Hiển thị:</label>
+                    <select name="pagesize" class="form-select" style="width:80px; border-radius:10px; border:1px solid #cbd5e1; font-weight:600; font-size:0.9rem;" onchange="this.form.action='/lop/index/'+this.value+'/0'; this.form.submit();">
+                        <?php foreach ([5, 10, 20, 50] as $ps): ?>
+                            <option value="<?php echo $ps; ?>" <?php echo ((int)$limit === $ps) ? 'selected' : ''; ?>><?php echo $ps; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <span class="text-muted text-nowrap" style="font-size:0.9rem;">/ trang</span>
+                </div>
+            </form>
+        </div>
+        <script>
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchForm').submit();
+        }
+        </script>
 
         <!-- Bảng lớp học -->
         <div class="table-responsive">
