@@ -295,26 +295,44 @@ function sortIcon($col, $currentSortBy, $currentSortDir) {
             </div>
         </div>
 
-        <!-- Thanh Tìm kiếm -->
-        <form action="/sinhvien/index/<?php echo $limit; ?>/0" method="GET" class="mb-4">
-            <input type="hidden" name="sortBy" value="<?php echo htmlspecialchars($sortBy); ?>">
-            <input type="hidden" name="sortDir" value="<?php echo htmlspecialchars($sortDir); ?>">
-            <div class="search-wrapper">
-                <input type="text" id="searchInput" name="search" class="form-control search-input" placeholder="Tìm kiếm theo MSSV, Họ tên, Mã lớp..." value="<?php echo htmlspecialchars($search); ?>">
-                <?php if (!empty($search)): ?>
-                    <button type="button" class="search-clear-btn" onclick="clearSearch()" title="Xóa tìm kiếm">
-                        <i class="fa-solid fa-xmark"></i>
+        <!-- Thanh Tìm kiếm + PageSize -->
+        <div class="d-flex align-items-center justify-content-between gap-3 mb-4 flex-wrap">
+            <form action="/sinhvien/index/<?php echo $limit; ?>/0" method="GET" id="searchForm">
+                <input type="hidden" name="sortBy" value="<?php echo htmlspecialchars($sortBy); ?>">
+                <input type="hidden" name="sortDir" value="<?php echo htmlspecialchars($sortDir); ?>">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" name="search" class="form-control search-input" placeholder="Tìm kiếm theo MSSV, Họ tên, Mã lớp..." value="<?php echo htmlspecialchars($search); ?>">
+                    <?php if (!empty($search)): ?>
+                        <button type="button" class="search-clear-btn" onclick="clearSearch()" title="Xóa tìm kiếm">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    <?php endif; ?>
+                    <button class="btn search-btn" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
                     </button>
-                <?php endif; ?>
-                <button class="btn search-btn" type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
-                </button>
-            </div>
-        </form>
+                </div>
+            </form>
+
+            <!-- Chọn số dòng mỗi trang -->
+            <form action="/sinhvien/index/<?php echo $limit; ?>/0" method="GET" id="pageSizeForm">
+                <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                <input type="hidden" name="sortBy" value="<?php echo htmlspecialchars($sortBy); ?>">
+                <input type="hidden" name="sortDir" value="<?php echo htmlspecialchars($sortDir); ?>">
+                <div class="d-flex align-items-center gap-2">
+                    <label class="text-muted fw-600 text-nowrap" style="font-size:0.9rem; font-weight:600;">Hiển thị:</label>
+                    <select name="pagesize" class="form-select" style="width:80px; border-radius:10px; border:1px solid #cbd5e1; font-weight:600; font-size:0.9rem;" onchange="this.form.action='/sinhvien/index/'+this.value+'/0'; this.form.submit();">
+                        <?php foreach ([5, 10, 20, 50] as $ps): ?>
+                            <option value="<?php echo $ps; ?>" <?php echo ((int)$limit === $ps) ? 'selected' : ''; ?>><?php echo $ps; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <span class="text-muted text-nowrap" style="font-size:0.9rem;">/ trang</span>
+                </div>
+            </form>
+        </div>
         <script>
         function clearSearch() {
             document.getElementById('searchInput').value = '';
-            document.querySelector('form').submit();
+            document.getElementById('searchForm').submit();
         }
         </script>
 
